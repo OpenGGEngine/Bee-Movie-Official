@@ -15,7 +15,6 @@ import com.opengg.core.world.components.Renderable;
 import com.opengg.core.world.components.Updatable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *
@@ -24,7 +23,11 @@ import java.util.function.Consumer;
 public class BeeComponent implements Renderable, Updatable{
     List<Bee> bees = new ArrayList<>();
     InstancedDrawnObject r;
-
+    
+    public BeeComponent(List<Bee> bees){
+        this.bees = bees;
+    }
+    
     @Override
     public void render() {
         Vector3f[] vs = new Vector3f[bees.size()];
