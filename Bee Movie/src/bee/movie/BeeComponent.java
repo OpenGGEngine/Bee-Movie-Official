@@ -10,9 +10,13 @@ import com.opengg.core.math.Quaternionf;
 import com.opengg.core.math.Vector3f;
 import com.opengg.core.render.drawn.Drawable;
 import com.opengg.core.render.drawn.InstancedDrawnObject;
+import com.opengg.core.render.objects.ObjectCreator;
 import com.opengg.core.world.components.Component;
 import com.opengg.core.world.components.Renderable;
 import com.opengg.core.world.components.Updatable;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,8 @@ public class BeeComponent implements Renderable, Updatable{
     
     public BeeComponent(List<Bee> bees){
         this.bees = bees;
+        Buffer[] b = ObjectCreator.createQuadPrismBuffers(new Vector3f(-1,-1,-1), new Vector3f(1,-1, 1));
+        r = new InstancedDrawnObject((FloatBuffer)b[0], (IntBuffer)b[1], Vector3f.listToBuffer(new Vector3f()));
     }
     
     @Override
