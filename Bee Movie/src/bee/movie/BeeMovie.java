@@ -11,62 +11,47 @@ import bee.movie.pathfinding.CostBlockManager;
 import bee.movie.pathfinding.Path;
 import bee.movie.pathfinding.Pathfinder;
 import com.opengg.core.audio.AudioListener;
-import com.opengg.core.engine.AudioController;
-import com.opengg.core.engine.EngineInfo;
+import com.opengg.core.engine.GGApplication;
 import com.opengg.core.engine.OpenGG;
 import com.opengg.core.engine.RenderEngine;
-import com.opengg.core.engine.WorldManager;
 import com.opengg.core.io.input.keyboard.KeyboardController;
 import com.opengg.core.io.input.keyboard.KeyboardListener;
 import com.opengg.core.math.Vector3f;
 import com.opengg.core.movement.MovementLoader;
 import com.opengg.core.render.objects.ObjectCreator;
 import com.opengg.core.render.texture.Cubemap;
-import com.opengg.core.render.window.DisplayMode;
-import com.opengg.core.render.window.GLFWWindow;
-import static com.opengg.core.render.window.RenderUtil.endFrame;
-import static com.opengg.core.render.window.RenderUtil.startFrame;
-import com.opengg.core.render.window.Window;
-import static com.opengg.core.util.GlobalUtil.print;
+import com.opengg.core.render.window.WindowInfo;
+import com.opengg.core.render.window.WindowOptions;
+import static com.opengg.core.render.window.WindowOptions.GLFW;
 import com.opengg.core.world.Camera;
-import com.opengg.core.world.World;
 
 /**
  *
  * @author Warren
  */
-public class BeeMovie implements KeyboardListener{
+public final class BeeMovie extends GGApplication implements KeyboardListener{
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        BeeMovie beeMovie = new BeeMovie();
+        WindowInfo w = new WindowInfo();
+        w.displaymode = WindowOptions.WINDOWED;
+        w.height = 1024;
+        w.width = 1280;
+        w.resizable = false;
+        w.type = GLFW;
+        w.vsync = true;
+        w.name = "Bee Project";
+        OpenGG.initialize(new BeeMovie(), w);
+        OpenGG.run();
     }
     public float xrot, yrot;
-    private final Window win;
-    private Camera c;
+    private final Camera c = new Camera();
     private AudioListener as;
     private Vector3f pos = new Vector3f();
     private Vector3f rot = new Vector3f();
-    private World w;
     private boolean lock;
-    
-    public BeeMovie(){
-        OpenGG.initializeOpenGG();
-        win = new GLFWWindow(1280, 960, "Bee Movie", DisplayMode.WINDOWED);   
-        KeyboardController.addToPool(this); 
-        
-        setup();
-         
-        while (!win.shouldClose()) {
-            startFrame();
-            update();
-            render();
-            endFrame(win);
-        }
-        OpenGG.closeEngine();
-    }
     
     public void process(){
         CellSpace space = new CellSpace();
@@ -98,51 +83,27 @@ public class BeeMovie implements KeyboardListener{
     }
     
     public void setup(){
+        KeyboardController.addToPool(this); 
         MovementLoader.setup(80);
         
-        OpenGG.initializeRenderEngine(this);
-        OpenGG.initializeAudioController();
-
-        c = new Camera(pos, rot);
-        c.setPos(pos);
-        c.setRot(rot);
-
-        print("Shader/VAO Loading and Generation Complete");
-          
-        as = new AudioListener();
-        AudioController.setListener(as);
-        Cubemap cb = new Cubemap();
-        cb.loadTexture("C:/res/skybox/majestic");
-        
-        w = WorldManager.getDefaultWorld();
-        EngineInfo.curworld = w;
-        w.floorLev = -10;
-        
-        RenderEngine.setSkybox(ObjectCreator.createCube(1500f), cb);
+        RenderEngine.setSkybox(ObjectCreator.createCube(1500f), Cubemap.get("C:/res/skybox/majestic"));
     }
     
     public void render(){
-        rot = new Vector3f(yrot, xrot, 0);
-        if(lock){
-            rot = MovementLoader.processRotation(15, false);
-        }
+        rot = MovementLoader.processRotation(5, false);
         pos = MovementLoader.processMovement(pos, rot);
-        
-        as.setPos(pos);
-        as.setRot(rot);
-        AudioController.setListener(as);
-        
+
         c.setPos(pos);
         c.setRot(rot);
 
         RenderEngine.controller.setLightPos(new Vector3f(40, 200, 40));
         RenderEngine.controller.setView(c);
-        RenderEngine.controller.setPerspective(90, win.getRatio(), 1, 2500f);
+        RenderEngine.controller.setPerspective(90, OpenGG.window.getRatio(), 1, 2500f);
         
         RenderEngine.draw();
     }
     
-    public void update(){
+    public void update(){ 
         
     }
 

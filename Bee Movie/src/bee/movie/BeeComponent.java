@@ -94,4 +94,12 @@ public class BeeComponent implements Renderable, Updatable{
             }
         });
     }
+
+    @Override
+    public void setScale(Vector3f v) {}
+
+    @Override
+    public Vector3f getScale() {
+        return new Vector3f();
+    }
 }
