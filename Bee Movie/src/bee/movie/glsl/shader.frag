@@ -144,12 +144,13 @@ vec4 shadify(){
             vec4((ambient +
             diffuse * light.color * light.lightpower * cosTheta / distmult +
             specular * light.color * light.lightpower * pow(cosAlpha, specpow) / distmult), trans);
- 
+            fragColor = vec4(vec3(0.3,1,0.7),1);
     return fragColor;
 }
 
 vec4 getCube(){
     return texture(cubemap, normalize(pos.xyz));
+    //return vec4(pos.xyz,1);
 }
 
 vec4 getWaveEffect(){

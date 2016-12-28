@@ -16,28 +16,15 @@ public class Pathfinder {
 	private Path path = new Path();
 	private BlockManager blockManager;
 
-	/**
-	 * Creates a Pathfinder with the specified BlockManager.
-	 * 
-	 * @param blockManager
-	 */
 	public Pathfinder(BlockManager blockManager) {
 		super();
 		this.blockManager = blockManager;
 	}
 
-	/**
-	 * Find and returns a path to the goal.
-	 * 
-	 * The returned path may not be complete, meaning that it was not able to
-	 * find a path to the goal. The Path should be checked for completion.
-	 * 
-	 * @return Path The discovered Path
-	 */
 	public Path findPath() {
 		path.clear();
 
-		CellSpace space = blockManager.getSpace();
+		PathTemplate space = blockManager.getSpace();
 		LinkedList<Cell> potentialNextCells = new LinkedList<Cell>();
 		Cell currentCell = space.getStartCell();
 

@@ -12,36 +12,23 @@ import java.util.LinkedList;
  *
  * @author Warren
  */
-public class CellSpace {
 
-	private HashMap<Cell, CellInfo> cellHash = new HashMap<Cell, CellInfo>();
+//Holds level data.
+
+public class PathTemplate {
+
+	private HashMap<Cell, CellData> cellHash = new HashMap<Cell, CellData>();
 	private double kM = 0.0;
 	private Cell startCell;
 	private Cell goalCell;
 
-	/**
-	 * Returns an empty CellSpace
-	 */
-	public CellSpace() {
+	public PathTemplate() {
 		super();
 	}
-
-	/**
-	 * Returns the specified Cell's CellInfo
-	 * 
-	 * @param cell
-	 * @return
-	 */
-	public CellInfo getInfo(Cell cell) {
+	public CellData getInfo(Cell cell) {
 		return cellHash.get(cell);
 	}
 
-	/**
-	 * Update the specified Cell's cost using the specified double.
-	 * 
-	 * @param cell
-	 * @param cost
-	 */
 	public void updateCellCost(Cell cell, double cost) {
 		if (cell == null) {
 			return;
@@ -49,23 +36,12 @@ public class CellSpace {
 
 		cellHash.get(cell).setCost(cost);
 	}
-
-	/**
-	 * Get the g value of the specified Cell.
-	 * 
-	 * The g value, as specified by
-	 * <a href="http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf">Sven
-	 * Koenig</a>, is the cost of the path from the start Cell to this Cell.
-	 * 
-	 * @param cell
-	 * @return
-	 */
 	public double getG(Cell cell) {
 		if (cell == null) {
 			return 0.0;
 		}
 
-		CellInfo info = cellHash.get(cell);
+		CellData info = cellHash.get(cell);
 
 		if (info == null) {
 			return 0.0;
@@ -74,28 +50,10 @@ public class CellSpace {
 		return info.getG();
 	}
 
-	/**
-	 * Build a Cell in the CellSpace using the specified x, y, z coordinates.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return
-	 */
 	public Cell makeNewCell(int x, int y, int z) {
 		return makeNewCell(x, y, z, null);
 	}
 
-	/**
-	 * Build a Cell in the CellSpace using the specified x, y, and z coordinates
-	 * plus the specified Costs.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param k
-	 * @return
-	 */
 	public Cell makeNewCell(int x, int y, int z, Costs k) {
 		Cell state = new Cell();
             
@@ -107,18 +65,12 @@ public class CellSpace {
 		return makeNewCell(state);
 	}
 
-	/**
-	 * Build a Cell in the CellSpace which is a copy of the specified Cell
-	 * 
-	 * @param cell
-	 * @return
-	 */
 	public Cell makeNewCell(Cell cell) {
 		if (cellHash.get(cell) != null) {
 			return cell;
 		}
 
-		CellInfo cellInfo = new CellInfo();
+		CellData cellInfo = new CellData();
 
 		if (goalCell == null) {
 			throw new RuntimeException("Goal cell not set");
@@ -139,13 +91,6 @@ public class CellSpace {
 		return cell;
 	}
 
-	/**
-	 * Set this CellSpace's start Cell.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
 	public void setStartCell(int x, int y, int z) {
 		Cell cell = new Cell();
 		cell.setX(x);
@@ -153,7 +98,7 @@ public class CellSpace {
 		cell.setZ(z);
 		this.startCell = cell;
 
-		CellInfo startCellInfo = new CellInfo();
+		CellData startCellInfo = new CellData();
 		double totalPathCost = Geometry.euclideanDistance(startCell, goalCell);
 		startCellInfo.setRhs(totalPathCost);
 		startCellInfo.setG(totalPathCost);
@@ -162,22 +107,10 @@ public class CellSpace {
 		this.startCell = calculateKey(startCell);
 	}
 
-	/**
-	 * Get this CellSpace's start Cell
-	 * 
-	 * @return
-	 */
 	public Cell getStartCell() {
 		return startCell;
 	}
-
-	/**
-	 * Set this CellSpace's goal Cell.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
+        
 	public void setGoalCell(int x, int y, int z) {
 		Cell cell = new Cell();
 		cell.setX(x);
@@ -185,14 +118,9 @@ public class CellSpace {
 		cell.setZ(z);
 
 		this.goalCell = cell;
-		this.cellHash.put(goalCell, new CellInfo());
+		this.cellHash.put(goalCell, new CellData());
 	}
 
-	/**
-	 * Get this CellSpace's goal Cell.
-	 * 
-	 * @return
-	 */
 	public Cell getGoalCell() {
 		return goalCell;
 	}
@@ -257,7 +185,7 @@ public class CellSpace {
 
 	// TODO Refactor with predeccesors.
 	public LinkedList<Cell> getSuccessors(Cell state) {
-		LinkedList<Cell> successors = new LinkedList<Cell>();
+		LinkedList<Cell> successors = new LinkedList<>();
 		Cell tempState;
 
 		// Generate the successors, starting at the immediate right and moving
@@ -286,7 +214,7 @@ public class CellSpace {
 	}
 
 	public LinkedList<Cell> getPredecessors(Cell state) {
-		LinkedList<Cell> predecessors = new LinkedList<Cell>();
+		LinkedList<Cell> predecessors = new LinkedList<>();
 		Cell tempState;
 
 		tempState = makeNewCell(state.getX() + 1, state.getY(), state.getZ(), new Costs(-1.0, -1.0));

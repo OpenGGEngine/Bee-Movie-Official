@@ -9,24 +9,14 @@ package bee.movie.pathfinding;
  *
  * @author Warren
  */
-public class CostBlockManager extends BlockManager {
+public class DebrisManager extends BlockManager {
 
-	/**
-	 * Return a CostBlockManager which manages the specified CellSpace.
-	 * 
-	 * @param space
-	 */
-	public CostBlockManager(CellSpace space) {
+	public DebrisManager(PathTemplate space) {
 		super(space);
 	}
 
-	/**
-	 * Mark the specified Cell as impassable.
-	 * 
-	 * @param blockedCell
-	 */
 	public void blockCell(Cell blockedCell) {
-		CellSpace space = super.getSpace();
+		PathTemplate space = super.getSpace();
 
 		if ((blockedCell.equals(space.getStartCell())) || (blockedCell.equals(space.getGoalCell()))) {
 			return;
@@ -36,15 +26,10 @@ public class CostBlockManager extends BlockManager {
 		space.updateCellCost(blockedCell, -1);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.tofweb.starlite.BlockManager#isBlocked(net.tofweb.starlite.Cell)
-	 */
         @Override
 	public boolean isBlocked(Cell cell) {
-		CellSpace space = super.getSpace();
-		CellInfo info = space.getInfo(cell);
+		PathTemplate space = super.getSpace();
+		CellData info = space.getInfo(cell);
 
 		if (info == null) {
 			return false;

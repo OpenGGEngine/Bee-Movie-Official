@@ -11,7 +11,7 @@ import java.util.LinkedList;
  *
  * @author Warren
  */
-public class Path extends LinkedList<Cell> {
+public class Path extends LinkedList<Cell> implements Comparable<Path>{
 
 	private static final long serialVersionUID = -5572661613938583005L;
 	private boolean isComplete = false;
@@ -28,5 +28,19 @@ public class Path extends LinkedList<Cell> {
 	protected void setComplete(boolean isComplete) {
 		this.isComplete = isComplete;
 	}
+
+    @Override
+    public int compareTo(Path o) {
+        if(o.size() < this.size()){
+            return -1;
+        }
+        if(o.size() > this.size()){
+            return 1;
+        }
+        
+            return 0;
+        
+    }
+        
 
 }

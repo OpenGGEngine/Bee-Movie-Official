@@ -43,6 +43,7 @@ void main() {
             modelView[2][2] = 1.0; 
         }
         gl_Position = projection * modelView * vec4(poss, 1.0f);
+       // gl_Position = vec4(poss, 1.0f);
         return;
     }
     vertexColors = color;

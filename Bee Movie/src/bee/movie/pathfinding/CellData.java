@@ -10,7 +10,7 @@ package bee.movie.pathfinding;
  * @author Warren
  */
  
-public class CellInfo {
+public class CellData {
 	private double g;
 	private double rhs;
 	private double cost;
@@ -18,19 +18,21 @@ public class CellInfo {
 	/**
 	 * Returns a blank CellInfo with the default cost.
 	 */
-	public CellInfo() {
+	public CellData() {
 		super();
 		this.cost = Cell.DEFAULT_COST;
 	}
-
-	/**
-	 * Get the g value.
-	 * 
-	 * The g value, as specified by
-	 * <a href="http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf">Sven
-	 * Koenig</a>, is the cost of the path from the start Cell to this Cell.
-	 * 
-	 * @return
+        
+        /*
+	 * RHS value.
+	 * RHS is the g value + the estimated cost to move to this Cell.
+	 */
+	public double getRhs() {
+		return rhs;
+	}
+        
+	/*
+	 * G is cost of the path from the start Cell to this Cell.
 	 */
 	public double getG() {
 		return g;
@@ -40,28 +42,11 @@ public class CellInfo {
 		this.g = g;
 	}
 
-	/**
-	 * Get the Right Hand Side value.
-	 * 
-	 * The Right Hand Side value, as specified by
-	 * <a href="http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf">Sven
-	 * Koenig</a>, is the g value + the estimated cost to move to this Cell.
-	 * 
-	 * @return
-	 */
-	public double getRhs() {
-		return rhs;
-	}
+	
 
 	public void setRhs(double rhs) {
 		this.rhs = rhs;
 	}
-
-	/**
-	 * Get the cost of this Cell.
-	 * 
-	 * @return
-	 */
 	public double getCost() {
 		return cost;
 	}

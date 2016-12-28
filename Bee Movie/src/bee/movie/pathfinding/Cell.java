@@ -20,16 +20,14 @@ public class Cell {
 	private Costs key = new Costs(0.0, 0.0);
 
 	/**
-	 * Returns a Cell with no defined position or Costs.
+	 * Blank cell.
 	 */
 	public Cell() {
 		super();
 	}
 
 	/**
-	 * Returns a Cell which is a clone of the specified Cell.
-	 * 
-	 * @param other
+	 * Copy Constructor
 	 */
 	public Cell(Cell other) {
 		this.x = other.x;
@@ -100,7 +98,7 @@ public class Cell {
 
 	@Override
 	public String toString() {
-		return "Cell [x=" + x + ", y=" + y + ", z=" + z + ", key=" + key + "]";
+		return "Cell [x=" + x + ", y=" + y + ", z=" + z + "] Cost=" + key.getCost() + "]";
 	}
 
 }

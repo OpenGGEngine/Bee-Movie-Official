@@ -14,12 +14,6 @@ public class Costs {
 	private Double costPlusHeuristic;
 	private Double cost;
 
-	/**
-	 * Return a Costs of the two provided Doubles.
-	 * 
-	 * @param costPlusHeuristic
-	 * @param cost
-	 */
 	public Costs(Double costPlusHeuristic, Double cost) {
 		this.costPlusHeuristic = costPlusHeuristic;
 		this.cost = cost;
@@ -74,7 +68,7 @@ public class Costs {
 
 	@Override
 	public String toString() {
-		return "Costs [costPlusHeuristic=" + costPlusHeuristic + ", cost=" + cost + "]";
+		return "costPlusHeuristic=" + costPlusHeuristic + ", cost=" + cost;
 	}
 
 }
