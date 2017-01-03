@@ -6,36 +6,38 @@
 package bee.movie;
 
 import bee.movie.pathfinding.Cell;
-import bee.movie.pathfinding.PathTemplate;
 import bee.movie.pathfinding.DebrisManager;
 import bee.movie.pathfinding.Path;
+import bee.movie.pathfinding.PathTemplate;
 import bee.movie.pathfinding.Pathfinder;
 import com.opengg.core.audio.AudioListener;
 import com.opengg.core.engine.GGApplication;
 import com.opengg.core.engine.OpenGG;
 import com.opengg.core.engine.RenderEngine;
 import com.opengg.core.engine.UpdateEngine;
+import static com.opengg.core.io.input.keyboard.Key.KEY_E;
+import static com.opengg.core.io.input.keyboard.Key.KEY_F;
+import static com.opengg.core.io.input.keyboard.Key.KEY_Q;
+import static com.opengg.core.io.input.keyboard.Key.KEY_R;
 import com.opengg.core.io.input.keyboard.KeyboardController;
 import com.opengg.core.io.input.keyboard.KeyboardListener;
 import com.opengg.core.math.Vector3f;
+import com.opengg.core.model.Model;
+import com.opengg.core.model.ModelLoader;
 import com.opengg.core.movement.MovementLoader;
 import com.opengg.core.render.drawn.InstancedDrawnObject;
 import com.opengg.core.render.objects.ObjectCreator;
+import com.opengg.core.render.shader.ShaderController;
 import com.opengg.core.render.texture.Cubemap;
 import com.opengg.core.render.texture.Texture;
 import com.opengg.core.render.window.WindowInfo;
 import com.opengg.core.render.window.WindowOptions;
 import static com.opengg.core.render.window.WindowOptions.GLFW;
 import com.opengg.core.world.Camera;
-import com.opengg.core.world.WorldObject;
-import com.opengg.core.world.components.ModelRenderComponent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
-
 /**
  *
  * @author Warren
@@ -64,7 +66,7 @@ public final class BeeMovie extends GGApplication implements KeyboardListener {
         OpenGG.initialize(new BeeMovie(), w);
         OpenGG.run();
     }
-    public float xrot, yrot;
+    public float xrot, yrot, rot1, rot2;
     private final Camera c = new Camera();
     private AudioListener as;
     private Vector3f pos = new Vector3f(199, 139, -139);
@@ -76,7 +78,7 @@ public final class BeeMovie extends GGApplication implements KeyboardListener {
     public Path process(Vector3f goal,Vector3f start) {
         PathTemplate space = new PathTemplate();
         space.setGoalCell((int) Math.floor(goal.x), (int) Math.floor(goal.y),
-                (int) Math.floor( goal.z));
+        (int) Math.floor( goal.z));
         space.setStartCell((int) Math.floor(start.x), (int) Math.floor(start.y), (int) Math.floor(start.z));
         DebrisManager blockManager = new DebrisManager(space);
         f.getDebeeArray();
@@ -106,30 +108,9 @@ public final class BeeMovie extends GGApplication implements KeyboardListener {
 
     @Override
     public void setup() {
+        KeyboardController.addToPool(this);
+        MovementLoader.setup(80);       
 
-
-//        KeyboardController.addToPool(this);
-//        MovementLoader.setup(80);
-//
-//        Bee barry = new Bee();
-//        barry.pos = new Vector3f();
-//        
-//       
-//        List<Bee> bees = new ArrayList<>();
-//        bees.add(barry);
-//        b = new BeeComponent(bees);
-//        ModelRenderComponent t = new ModelRenderComponent(blocks);
-//        t.setPosition(new Vector3f());
-//        t.setScale(new Vector3f());
-//
-//        RenderEngine.addRenderable(t);
-//        RenderEngine.addRenderable(b);
-//        UpdateEngine.addObjects(b);
-        RenderEngine.setSkybox(ObjectCreator.createCube(1500f), Cubemap.get("C:/res/skybox/majestic"));
-        t1 = Texture.get("C:/res/yoshiback.png");
-
-        Texture.blank = t1;
-        
         ArrayList<Path> moarpaths = new ArrayList<>();
         int s = 0;
         
@@ -143,7 +124,7 @@ public final class BeeMovie extends GGApplication implements KeyboardListener {
                 if (low > yup) {
                     low = yup;
                     index = tempup;
-                    System.out.println(low);
+                    //System.out.println(low);
                 }
                 tempup++;
             }
@@ -155,51 +136,90 @@ public final class BeeMovie extends GGApplication implements KeyboardListener {
         }
         int path = 1;
         int moves = 0;
+        
+        List<Bee> bees = new ArrayList<>();
         for (Path c : moarpaths) {
-            System.out.println("Path " + path);
+            //System.out.println("Path " + path);
             for(Cell cyto:c){
                 
-            System.out.println(cyto.toString());
+            //System.out.println(cyto.toString());
                moves++;
             }
-             System.out.println("______________");
+             //System.out.println("______________");
             path++;
 
-            
+            bees.add(new Bee(c));
         }
+        
         System.out.println("Num moves " + moves);
-
+        t1 = Texture.get("C:\\res\\bbbenson.jpg");
+        //Model m = ModelLoader.loadModel("C:\\res\\bigbee\\model.bmf");
+        
+        b = new BeeComponent(bees);
+        RenderEngine.addRenderable(b);
+        UpdateEngine.addObjects(b);
+        
+        RenderEngine.setSkybox(ObjectCreator.createCube(1500f), Cubemap.get("C:/res/skybox/majestic"));
     }
 
     @Override
     public void render() {
-        rot = MovementLoader.processRotation(1, true);
+        rot = new Vector3f(yrot, xrot, 0);
         pos = MovementLoader.processMovement(pos, rot);
         //pos = b.bees.get(0).pos;
         c.setPos(pos);
         c.setRot(rot);
 
-        RenderEngine.controller.setLightPos(new Vector3f(40, 200, 40));
-        RenderEngine.controller.setView(c);
-        RenderEngine.controller.setPerspective(90, OpenGG.window.getRatio(), 1, 2500f);
+        ShaderController.setLightPos(new Vector3f(40, 200, 40));
+        ShaderController.setView(c);
+        ShaderController.setPerspective(90, OpenGG.window.getRatio(), 1, 2500f);
         t1.useTexture(0);
-       // RenderEngine.draw();
+        t1.useTexture(1);
+        t1.useTexture(2);
+        t1.useTexture(3);
+        t1.useTexture(4);
+        t1.useTexture(5);
+        RenderEngine.setCulling(false);
+        RenderEngine.draw();
     }
 
     @Override
     public void update() {
-        glfwSetWindowTitle(OpenGG.window.getID(), pos.toString());
         UpdateEngine.update();
+        xrot -= rot1 * 7;
+        yrot -= rot2 * 7;
     }
 
     @Override
     public void keyPressed(int key) {
-
+        if (key == KEY_Q) {
+            rot1 += 0.3;
+        }
+        if (key == KEY_E) {
+            rot1 -= 0.3;
+        }
+        if (key == KEY_R) {
+            rot2 += 0.3;
+        }
+        if (key == KEY_F) {
+            rot2 -= 0.3;
+        }
     }
 
     @Override
     public void keyReleased(int key) {
-
+        if (key == KEY_Q) {
+            rot1 -= 0.3;
+        }
+        if (key == KEY_E) {
+            rot1 += 0.3;
+        }
+        if (key == KEY_R) {
+            rot2 -= 0.3;
+        }
+        if (key == KEY_F) {
+            rot2 += 0.3;
+        }
     }
 
 }

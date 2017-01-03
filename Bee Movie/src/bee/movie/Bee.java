@@ -7,6 +7,7 @@
 package bee.movie;
 
 import bee.movie.pathfinding.Cell;
+import bee.movie.pathfinding.Path;
 import com.opengg.core.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,4 +25,15 @@ public class Bee {
     String name;
     boolean complete;
     List<Cell> path = new ArrayList<>();
+    
+    public Bee(Path p){
+        this.path = p;
+        complete = false;
+        lpos = 0;
+        current = p.get(lpos);
+        next = p.get(lpos+1);
+        percent = 0;
+        pos = new Vector3f(current.getX(), current.getY(), current.getZ());
+        name = "Barry B Benson";
+    }
 }
